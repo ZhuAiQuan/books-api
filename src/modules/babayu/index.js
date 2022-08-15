@@ -24,8 +24,9 @@ async function getIndex() {
     all: []
   };
   $('.clearfix.mt10>.fright.clickranking>.clickranking-tabcon>ul').each((i, v) => {
-    const obj = {};
+    
     $(v).find('li').each((_, n) => {
+      const obj = {};
       const author = $(n).find('p.attr').text().split('：').at(-1);
       const title = $(n).find('a').attr('title');
       const link = url + $(n).find('a').attr('href');
