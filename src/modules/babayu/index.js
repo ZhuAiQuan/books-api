@@ -205,8 +205,9 @@ async function getBooksChapter(id) {
   return info
 }
 // 小说分类
-async function category(id) {
-  await axios.get(`${url}/lists/book_${id}.html`)
+async function category(id, page = 1) {
+  const { data } = await axios.get(`${url}/lists/book_${id}_${page}.html`);
+  const $ = cheerio.load(data)
 }
 // 搜索
 async function search(keyword) {
