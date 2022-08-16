@@ -162,6 +162,25 @@ async function bookChapter(id) {
 async function getAuthorDetail(id) {
   const { data } = await axios.get(`${url}/soshu/${id}.html`);
   const $ = cheerio.load(data);
+  const result = $('ul.search-list>li');
+  const list = [];
+  if (result.length && result.find('a.col-l').length && result.find('div.col-r').length) {
+    result.each((_, v) => {
+      const id = regNumber($(v).find('a.col-l').attr('href'));
+      const title = $(v).find('a.col-l').attr('title');
+      const cover = $(v).find('a.col-l>img').attr('src');
+      const status = $(v).find('div.col-r p.author').eq(0).text().split('：').at(-1);
+      const author = $(v).find('div.col-r p.author').eq(1).text().split('：').at(-1);
+      const temp = $(v).find('div.col-r p.intro').text().split('：');
+      temp.shift();
+      const intro = temp.join('：')
+      const latest = $(v).find('div.col-r p.latest').text().split('：').at(-1);
+      list.push({
+        id, title, cover, status, author, intro, latest
+      })
+    })
+  }
+  return list
 }
 // 章节详情
 async function getBooksChapter(id) {

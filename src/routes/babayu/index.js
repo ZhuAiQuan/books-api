@@ -1,6 +1,6 @@
 const Router = require('koa-router');
 const babayu = new Router();
-const { getIndex, getDetail, bookChapter, getBooksChapter, search } = require('../../modules/babayu')
+const { getIndex, getDetail, bookChapter, getBooksChapter, search, getAuthorDetail } = require('../../modules/babayu')
 
 babayu.get('/', async ctx => {
   const data = await getIndex();
@@ -78,6 +78,21 @@ babayu.post('/search', async ctx => {
   ctx.body = {
     code: 0,
     msg: data.length >= 30 ? '最多显示30条数据，关键词请尽量准确！' : 'success',
+    data
+  }
+});
+babayu.post('/author', async ctx => {
+  if (!ctx.request.body.id) {
+    ctx.body = {
+      code: 500,
+      msg: '缺少参数!'
+    }
+    return
+  }
+  const data = await getAuthorDetail(ctx.request.body.id);
+  ctx.body = {
+    code: 0,
+    msg: 'success',
     data
   }
 })
