@@ -74,7 +74,7 @@ babayu.post('/search', async ctx => {
     }
     return
   }
-  const data = await search(ctx.request.body.keyword);
+  const data = await search(encodeURI(ctx.request.body.keyword));
   ctx.body = {
     code: 0,
     msg: data.length >= 30 ? '最多显示30条数据，关键词请尽量准确！' : 'success',

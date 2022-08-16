@@ -183,7 +183,6 @@ async function category(id) {
 }
 // 搜索
 async function search(keyword) {
-  console.log(keyword);
   const { data } = await axios.get(`${url}/soshu.html?ss=${keyword}`);
   const $ = cheerio.load(data);
   const result = $('ul.search-list>li');
@@ -196,7 +195,7 @@ async function search(keyword) {
       const status = $(v).find('div.col-r p.author').eq(0).text().split('：').at(-1);
       const author = $(v).find('div.col-r p.author').eq(1).text().split('：').at(-1);
       const temp = $(v).find('div.col-r p.intro').text().split('：');
-      temp.unshift();
+      temp.shift();
       const intro = temp.join('：')
       const latest = $(v).find('div.col-r p.latest').text().split('：').at(-1);
       list.push({
