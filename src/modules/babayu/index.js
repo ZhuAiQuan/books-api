@@ -2,7 +2,15 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const url = 'https://www.babayu.tv';
 const cate = {
+  42: '玄幻奇幻',
+  43: '武侠修真',
   44: '都市异能',
+  45: '历史军事',
+  46: '网游竞技',
+  47: '科幻灭世',
+  48: '女生频道',
+  49: '惊悚悬疑',
+  52: '轻小说',
 }
 
 // 首页
