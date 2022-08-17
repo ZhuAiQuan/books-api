@@ -207,7 +207,22 @@ async function getBooksChapter(id) {
 // 小说分类
 async function category(id, page = 1) {
   const { data } = await axios.get(`${url}/lists/book_${id}_${page}.html`);
-  const $ = cheerio.load(data)
+  const $ = cheerio.load(data);
+  const list = [];
+  $('div.layout .books-list ul>li').each((_, v) => {
+    const title = $(v).find('a.pic').attr('title');
+    const cover = $(v).find('a.pic>img').attr('src');
+    const id = regNumber($(v).find('a.pic').attr('href'));
+    const author = $(v).find('.graybg>p.author').text().split('：').at(-1);
+    const time = $(v).find('.graybg>p.time').text();
+    const intro = $(v).find('a.introlink>span.intro').text();
+    list.push({
+      time, title, cover, id, author, intro
+    });
+  });
+  return {
+    list
+  }
 }
 // 搜索
 async function search(keyword) {
@@ -255,4 +270,5 @@ module.exports = {
   getBooksChapter,
   bookChapter,
   search,
+  category
 }

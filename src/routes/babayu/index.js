@@ -1,6 +1,6 @@
 const Router = require('koa-router');
 const babayu = new Router();
-const { getIndex, getDetail, bookChapter, getBooksChapter, search, getAuthorDetail } = require('../../modules/babayu')
+const { getIndex, getDetail, bookChapter, getBooksChapter, search, getAuthorDetail, category } = require('../../modules/babayu')
 
 babayu.get('/', async ctx => {
   const data = await getIndex();
@@ -94,6 +94,22 @@ babayu.post('/author', async ctx => {
     code: 0,
     msg: 'success',
     data
+  }
+});
+babayu.post('/category', async ctx => {
+  const { id, page } = ctx.request.body;
+  if (id && page) {
+    const data = await category(id, page);
+    ctx.body = {
+      code: 0,
+      data,
+      msg: 'success'
+    }
+  } else {
+    ctx.body = {
+      code: 500,
+      msg: '缺少必要的参数!'
+    }
   }
 })
 
