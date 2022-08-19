@@ -16,7 +16,7 @@ const instance = axios.create();
 instance.defaults.timeout = 20 * 1000;
 instance.defaults.headers = {
   accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-  referer: 'https://www.babayu.tv/lists/book_42_1.html',
+  // referer: 'https://www.babayu.tv',
   'sec-ch-ua': '"Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"',
   'sec-ch-ua-mobile': '?0',
   'Content-Type': 'text/html; charset=utf-8',
