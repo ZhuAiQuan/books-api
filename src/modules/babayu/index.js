@@ -17,18 +17,15 @@ instance.defaults.timeout = 20 * 1000;
 instance.defaults.headers = {
   accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
   // referer: 'https://www.babayu.tv',
-  'sec-ch-ua': '"Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"',
-  'sec-ch-ua-mobile': '?0',
-  'Content-Type': 'text/html; charset=utf-8',
-  'sec-ch-ua-platform': "Windows",
   'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36',
   Host: 'www.babayu.tv'
 }
 
 // 首页
 async function getIndex() {
-  const { data } = await instance.get(url, { timeout: 20*1000 });
-  if (!data.length) return data
+  const { data, status, ...rest } = await instance.get(url, { timeout: 20*1000 });
+  console.log(rest)
+  if (+status !== 200) return data
   const $ = cheerio.load(data);
   const recommended = []
   $('.clearfix.mt10>.fleft.boutiquerecom ul.clearfix>li').each((i, v) => {
