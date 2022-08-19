@@ -12,10 +12,12 @@ const cate = {
   49: '惊悚悬疑',
   52: '轻小说',
 }
+const instance = axios.create();
+instance.defaults.timeout = 20 * 1000;
 
 // 首页
 async function getIndex() {
-  const { data } = await axios.get(url);
+  const { data } = await instance.get(url, { timeout: 20*1000 });
   const $ = cheerio.load(data);
   const recommended = []
   $('.clearfix.mt10>.fleft.boutiquerecom ul.clearfix>li').each((i, v) => {
@@ -121,7 +123,7 @@ async function getIndex() {
 }
 // 小说详情
 async function getDetail(id) {
-  const { data } = await axios.get(`${url}/kanshu/book_${id}.html`);
+  const { data } = await instance.get(`${url}/kanshu/book_${id}.html`);
   const $ = cheerio.load(data);
   const title = $('#content .fleft.column-l .booktitle .name h1').text();
   const [type, fontTotal, author] = $('#content .fleft.column-l .booktitle p').text().split('|').map(item => item.split('：').at(-1));
@@ -153,7 +155,7 @@ async function getDetail(id) {
 }
 // 查询小说目录
 async function bookChapter(id) {
-  const { data } = await axios.get(`${url}/book_other_${id}.html`);
+  const { data } = await instance.get(`${url}/book_other_${id}.html`);
   const $ = cheerio.load(data);
   const list = [];
   $('ul.chapter-list>li').each((_, v) => {
@@ -168,7 +170,7 @@ async function bookChapter(id) {
 }
 // 作者详情
 async function getAuthorDetail(id) {
-  const { data } = await axios.get(`${url}/soshu/${id}.html`);
+  const { data } = await instance.get(`${url}/soshu/${id}.html`);
   const $ = cheerio.load(data);
   const result = $('ul.search-list>li');
   const list = [];
@@ -192,7 +194,7 @@ async function getAuthorDetail(id) {
 }
 // 章节详情
 async function getBooksChapter(id) {
-  const { data } = await axios.get(`${url}/kanshu/${id}.html`);
+  const { data } = await instance.get(`${url}/kanshu/${id}.html`);
   const $ = cheerio.load(data);
   let info = formatText($('#BookText').html());
   const last = $('.readbg .articlebtn>a').eq(3);
@@ -206,7 +208,7 @@ async function getBooksChapter(id) {
 }
 // 小说分类
 async function category(id, page = 1) {
-  const { data } = await axios.get(`${url}/lists/book_${id}_${page}.html`);
+  const { data } = await instance.get(`${url}/lists/book_${id}_${page}.html`);
   const $ = cheerio.load(data);
   const list = [];
   $('div.layout .books-list ul>li').each((_, v) => {
@@ -226,7 +228,7 @@ async function category(id, page = 1) {
 }
 // 搜索
 async function search(keyword) {
-  const { data } = await axios.get(`${url}/soshu.html?ss=${keyword}`);
+  const { data } = await instance.get(`${url}/soshu.html?ss=${keyword}`);
   const $ = cheerio.load(data);
   const result = $('ul.search-list>li');
   const list = [];
