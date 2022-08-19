@@ -18,12 +18,14 @@ instance.defaults.headers = {
   accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
   referer: 'https://www.babayu.tv/lists/book_42_1.html',
   'sec-ch-ua': 'Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104',
-  'Content-Type': 'text/plain'
+  // 'Content-Type': 'text/plain',
+  'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36'
 }
 
 // 首页
 async function getIndex() {
   const { data } = await instance.get(url, { timeout: 20*1000 });
+  if (!data.length) return data
   const $ = cheerio.load(data);
   const recommended = []
   $('.clearfix.mt10>.fleft.boutiquerecom ul.clearfix>li').each((i, v) => {
