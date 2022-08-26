@@ -1,10 +1,10 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
 const url = "https://www.zei8.vip";
-// const path = require("path");
-// const { Worker } = require("worker_threads");
-// const worker = new Worker(path.join(__dirname, "../../worker/request.js"));
-// worker.setMaxListeners(Infinity);
+const path = require("path");
+const { Worker } = require("worker_threads");
+const worker = new Worker(path.join(__dirname, "../../worker/request.js"));
+worker.setMaxListeners(Infinity);
 // const tag = {
 //   // 男频
 //   xuanhuan: '东方玄幻',
@@ -227,18 +227,17 @@ async function top(type) {
 }
 async function detail(id) {
   const { data } = await instance.get(`${url}/txt/${id}.html`);
+  console.log(new Date().getTime());
   const $ = cheerio.load(data);
-  // const link = [];
-  // const downloadLink =
-  //   url + $(".viewbox .content>ul.downurllistad>ul.downurllist a").attr("href");
-  // worker.postMessage(downloadLink);
-  // worker.on("message", (res) => {
-  //   const _ = cheerio.load(res);
-  //   _(".panel-body .downfile a").each((i, v) => {
-  //     link.push($(v).attr("href"));
-  //   });
-  //   worker.terminate(); // 关闭此线程
-  // });
+  const link = [];
+  const downloadLink =
+    url + $(".viewbox .content>ul.downurllistad>ul.downurllist a").attr("href");
+  const html = await syncDownload(downloadLink);
+  const _ = cheerio.load(html);
+  _(".panel-body .downfile a").each((i, v) => {
+    link.push($(v).attr("href"));
+  });
+
   const title = $(".viewbox div.title h2").text();
   const cover = $(".viewbox>div.picview>img").attr("src");
   const temp = [];
@@ -247,11 +246,9 @@ async function detail(id) {
   });
   const [size, date, allowDownload, status, env, author] = temp;
   const intro = $(".viewbox div.content>p").text();
-  const params = $(".viewbox .content>ul.downurllistad>ul.downurllist a").attr("href")?.split('?')[1].split('&').map(item => item.split('=')[1]);
-  // @ts-ignore
-  const [ classid, _id, pathid ] = params;
+
   return {
-    // link,
+    link,
     title,
     cover,
     size,
@@ -260,20 +257,17 @@ async function detail(id) {
     author,
     intro,
     id,
-    classid,
-    pathid
   };
 }
-async function getDownload({ classid, id, pathid = 0 }) {
-  const { data } = await instance.get(
-    `${url}/e/DownSys/DownSoft/?classid=${classid}&id=${id}&pathid=${pathid}`
-  );
-  const link = [];
-  const _ = cheerio.load(data);
-  _(".panel-body .downfile a").each((i, v) => {
-    link.push(_(v).attr("href"));
-  });
-  return link
+// 副线程同步 执行异步请求
+function syncDownload(url) {
+  return new Promise((resolve, reject) => {
+    worker.postMessage(url);
+    worker.on('message', (res) => {
+      resolve(res);
+      worker.terminate(); // 关闭此线程
+    })
+  })
 }
 
 function getTxtId(str) {
@@ -286,5 +280,4 @@ module.exports = {
   category,
   top,
   detail,
-  getDownload,
 };

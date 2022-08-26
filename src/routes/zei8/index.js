@@ -1,6 +1,6 @@
 const Router = require('koa-router');
 const zei8 = new Router();
-const { getIndex, search, category, top, detail, getDownload } = require('../../modules/zei8')
+const { getIndex, search, category, top, detail } = require('../../modules/zei8')
 
 zei8.get('/', async ctx => {
   const data = await getIndex();
@@ -73,27 +73,5 @@ zei8.post('/detail', async ctx => {
     msg: 'success'
   }
 });
-zei8.post('/download', async ctx => {
-  const params = {};
-  if (ctx.request.body && Object.keys(ctx.request.body).length) {
-    for(const key in ctx.request.body) {
-      params[key] = ctx.request.body[key]
-    }
-  }
-  if (params.classid && params.id) {
-    const data = await getDownload(params);
-    ctx.body = {
-      code: 0,
-      data,
-      msg: 'success'
-    }
-  } else {
-    ctx.body = {
-      code: 500,
-      msg: '参数错误'
-    }
-  }
-  
-})
 
 module.exports = zei8
